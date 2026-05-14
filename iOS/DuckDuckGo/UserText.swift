@@ -2451,6 +2451,44 @@ public struct UserText {
             )
         }
 
+        enum DuckAICPP {
+            public enum Intro {
+                public static let message = NotLocalizedString("onboarding.duckai.intro.message", value: "Ready to chat privately with ChatGPT, Claude, and other AIs for free, in a browser that actively protects you?", comment: "The message of the onboarding intro dialog popup")
+            }
+
+            public enum Skip {
+                public static let message = NotLocalizedString("onboarding.duckai.skip.message", value: "Remember: you can use Duck.ai from anywhere you see the chat icon [[chat_icon]]", comment: "The message of the onboarding skip dialog popup")
+
+                public static let confirmSkipOnboardingCTA = NotLocalizedString("onboarding.duckai.skip.cta.confirm", value: "Start AI Chat", comment: "The title of the button to skip the onboarding and start browsing.")
+            }
+
+            public enum DuckAIQuery {
+                public static let title = NotLocalizedString(
+                    "onboarding.duckai.duckAIQuery.title",
+                    value: "Now, try a private AI chat!",
+                    comment: "Title for the onboarding Duck.ai query screen."
+                )
+            }
+
+            public enum AddToDock {
+                public enum Promo {
+                    static let message = NotLocalizedString(
+                        "onboarding.duckai.addToDock.promo.message",
+                        value: "I'll nest in easy reach for all your daily AI chats and browsing.",
+                        comment: "The message of the onboarding dialog popup that promotes adding the DDG browser icon to the dock."
+                    )
+                }
+            }
+
+            public enum BrowserComparison {
+                public static let title = NotLocalizedString(
+                    "onboarding.duckai.browser.title",
+                    value: "Want to make DuckDuckGo your default browser?",
+                    comment: "The title of the dialog to show the privacy features that DuckDuckGo offers"
+                )
+            }
+        }
+
         enum ContextualOnboarding {
 
             enum Rebranding {

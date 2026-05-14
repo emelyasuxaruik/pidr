@@ -32,7 +32,7 @@ protocol OnboardingIntroContentProviding {
     var appIconColorContent: OnboardingAppIconColorContent { get }
     var addressBarPositionContent: OnboardingAddressBarPositionContent { get }
     var searchExperienceContent: OnboardingSearchExperienceContent { get }
-    var duckAIQueryExperimentContent: OnboardingDuckAIQueryExperimentContent { get }
+    var duckAIQueryContent: OnboardingDuckAIQueryContent { get }
 }
 
 struct OnboardingIntroContentProvider: OnboardingIntroContentProviding {
@@ -91,10 +91,20 @@ struct OnboardingIntroStepContent: Equatable {
 extension OnboardingIntroContentProvider {
 
     var introStepContent: OnboardingIntroStepContent {
+        let introMessage = switch flowType {
+        case .default: UserText.Onboarding.Rebranding.Intro.message
+        case .duckAI: UserText.Onboarding.DuckAICPP.Intro.message
+        }
+
+        let (skipMessage, skipPrimaryCTA) = switch flowType {
+        case .default: (UserText.Onboarding.Skip.message, UserText.Onboarding.Skip.confirmSkipOnboardingCTA)
+        case .duckAI: (UserText.Onboarding.DuckAICPP.Skip.message, UserText.Onboarding.DuckAICPP.Skip.confirmSkipOnboardingCTA)
+        }
+
         let skipOnboardingContent = OnboardingIntroStepContent.SkipFlowStepContent(
             title: UserText.Onboarding.Skip.title,
-            message: UserText.Onboarding.Skip.message,
-            primaryCTA: UserText.Onboarding.Skip.confirmSkipOnboardingCTA,
+            message: skipMessage,
+            primaryCTA: skipPrimaryCTA,
             secondaryCTA: UserText.Onboarding.Skip.resumeOnboardingCTA
         )
 
@@ -107,7 +117,7 @@ extension OnboardingIntroContentProvider {
 
         return OnboardingIntroStepContent(
             title: UserText.Onboarding.Rebranding.Intro.title,
-            message: UserText.Onboarding.Rebranding.Intro.message,
+            message: introMessage,
             primaryCTA: UserText.Onboarding.Intro.continueCTA,
             secondaryCTA: UserText.Onboarding.Intro.skipCTA,
             restorePromptStepContent: restoreOnboardingContent,
@@ -129,8 +139,13 @@ struct OnboardingBrowserComparisonContent: Equatable {
 extension OnboardingIntroContentProvider {
 
     var browserComparisonContent: OnboardingBrowserComparisonContent {
-        OnboardingBrowserComparisonContent(
-            title: UserText.Onboarding.BrowsersComparison.title,
+        let title = switch flowType {
+        case .default: UserText.Onboarding.BrowsersComparison.title
+        case .duckAI: UserText.Onboarding.DuckAICPP.BrowserComparison.title
+        }
+
+        return OnboardingBrowserComparisonContent(
+            title: title,
             features: RebrandedBrowsersComparisonModel.defaultFeatures,
             primaryCTA: UserText.Onboarding.BrowsersComparison.cta,
             secondaryCTA: UserText.onboardingSkip
@@ -180,6 +195,11 @@ struct OnboardingAddToDockContent: Equatable {
 extension OnboardingIntroContentProvider {
 
     var addToDockContent: OnboardingAddToDockContent {
+        let promoMessage = switch flowType {
+        case .default: UserText.AddToDockOnboarding.Promo.introMessage
+        case .duckAI: UserText.Onboarding.DuckAICPP.AddToDock.Promo.message
+        }
+
         let tutorial = OnboardingAddToDockContent.TutorialStepContent(
             title: UserText.AddToDockOnboarding.Tutorial.title,
             message: UserText.AddToDockOnboarding.Tutorial.message,
@@ -188,7 +208,7 @@ extension OnboardingIntroContentProvider {
 
         return OnboardingAddToDockContent(
             title: UserText.AddToDockOnboarding.Promo.title,
-            message: UserText.AddToDockOnboarding.Promo.introMessage,
+            message: promoMessage,
             primaryCTA: UserText.AddToDockOnboarding.Buttons.tutorial,
             secondaryCTA: UserText.AddToDockOnboarding.Buttons.skip,
             tutorialStepContent: tutorial
@@ -274,19 +294,29 @@ extension OnboardingIntroContentProvider {
 
 // MARK: - Content Provider + Duck.ai Query Experiment (Ready to get started?)
 
-struct OnboardingDuckAIQueryExperimentContent: Equatable {
+struct OnboardingDuckAIQueryContent: Equatable {
     let title: String
     let searchPlaceholder: String
     let aiPlaceholder: String
+
+    let isToggleVisible: Bool
 }
 
 extension OnboardingIntroContentProvider {
 
-    var duckAIQueryExperimentContent: OnboardingDuckAIQueryExperimentContent {
-        OnboardingDuckAIQueryExperimentContent(
-            title: UserText.Onboarding.DuckAIQueryExperiment.title,
+    var duckAIQueryContent: OnboardingDuckAIQueryContent {
+        let (title, isToggleVisible) = switch flowType {
+        case .default:
+            (UserText.Onboarding.DuckAIQueryExperiment.title, true)
+        case .duckAI:
+            (UserText.Onboarding.DuckAICPP.DuckAIQuery.title, false)
+        }
+
+        return OnboardingDuckAIQueryContent(
+            title: title,
             searchPlaceholder: UserText.Onboarding.DuckAIQueryExperiment.searchPlaceholder,
-            aiPlaceholder: UserText.Onboarding.DuckAIQueryExperiment.aiPlaceholder
+            aiPlaceholder: UserText.Onboarding.DuckAIQueryExperiment.aiPlaceholder,
+            isToggleVisible: isToggleVisible
         )
     }
 
