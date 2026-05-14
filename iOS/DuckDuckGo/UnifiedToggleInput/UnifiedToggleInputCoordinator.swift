@@ -1970,9 +1970,8 @@ private extension UnifiedToggleInputCoordinator {
             return
         }
         isNewChatPending = false
-        let shouldHide = hasExistingChat || hasSubmittedPrompt
-        guard hasSubmittedPrompt != shouldHide else { return }
-        hasSubmittedPrompt = shouldHide
+        guard hasSubmittedPrompt != hasExistingChat else { return }
+        hasSubmittedPrompt = hasExistingChat
         updateModelChipVisibility()
         syncHasSubmittedPromptToHandler()
     }
