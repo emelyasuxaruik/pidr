@@ -367,6 +367,12 @@ enum AIChatPixel: PixelKitEvent {
     /// Event Trigger: Fires daily when the app becomes active, reporting whether AI Chat features are enabled or disabled
     case aiChatIsEnabled(isEnabled: Bool)
 
+    /// Event Trigger: The Duck.ai FE reported that `getUserMedia()` rejected while attempting
+    /// to start a voice chat. `reason` distinguishes the case we acted on (`mic_os_denied`)
+    /// from anything else (`other`) — useful for measuring how often the FE hook fires for
+    /// unrelated WebKit failures and for sizing the OS-deny remediation funnel.
+    case aiChatVoiceChatStartFailed(reason: AIChatVoiceChatStartFailedReason)
+
     // MARK: -
 
     var name: String {
@@ -582,6 +588,8 @@ enum AIChatPixel: PixelKitEvent {
             return "aichat_tab_did_terminate"
         case .aiChatIsEnabled:
             return "aichat_is_enabled"
+        case .aiChatVoiceChatStartFailed:
+            return "aichat_voice_chat_start_failed"
         }
     }
 
@@ -708,6 +716,8 @@ enum AIChatPixel: PixelKitEvent {
                 .aiChatSyncDecryptionError(let reason),
                 .aiChatSyncHistoryEnabledError(let reason):
             return ["reason": reason]
+        case .aiChatVoiceChatStartFailed(let reason):
+            return ["reason": reason.rawValue]
         }
     }
 
@@ -815,6 +825,7 @@ enum AIChatPixel: PixelKitEvent {
                 .aiChatAddressBarWebSearchDeactivated,
                 .aiChatAddressBarWebSearchSubmitted,
                 .aiChatIsEnabled,
+                .aiChatVoiceChatStartFailed,
                 .aiChatTabDidTerminate:
             return [.pixelSource]
         }
@@ -845,4 +856,13 @@ enum AIChatSidebarCloseSource: String, CaseIterable {
     case sidebarCloseButton = "sidebar-close-button"
     case contextMenu = "context-menu"
     case tabbarButton = "tabbar-button"
+}
+
+/// Reason associated with a Duck.ai voice-chat start failure reported by the FE
+enum AIChatVoiceChatStartFailedReason: String, CaseIterable {
+    /// FE reported `NotAllowedError` and the OS has denied microphone access to the app —
+    /// the remediation surface was shown.
+    case micOsDenied = "mic_os_denied"
+    /// Any other reason (transient WebKit error, hardware unavailable, etc.) — no action taken.
+    case other
 }
