@@ -184,6 +184,7 @@ class MainViewController: UIViewController {
     let featureFlagger: FeatureFlagger
     private let longPressBarMenuBuilder = LongPressBarMenuBuilder()
     let idleReturnEligibilityManager: IdleReturnEligibilityManaging
+    let afterInactivityOptionAdapter: AfterInactivityOptionAdapter
     let ntpAfterIdleInstrumentation: NTPAfterIdleInstrumentation
     let idleReturnTabCountInstrumentation: IdleReturnTabCountInstrumentation
     let postIdleSessionInstrumentation: PostIdleSessionInstrumentation
@@ -404,6 +405,7 @@ class MainViewController: UIViewController {
         voiceSearchHelper: VoiceSearchHelperProtocol,
         featureFlagger: FeatureFlagger,
         idleReturnEligibilityManager: IdleReturnEligibilityManaging,
+        afterInactivityOptionAdapter: AfterInactivityOptionAdapter,
         lastActiveTabStore: LastActiveTabStoring = LastActiveTabStore(),
         syncAutoRestoreHandler: SyncAutoRestoreHandling,
         contentScopeExperimentsManager: ContentScopeExperimentsManaging,
@@ -483,6 +485,7 @@ class MainViewController: UIViewController {
         self.voiceSearchHelper = voiceSearchHelper
         self.featureFlagger = featureFlagger
         self.idleReturnEligibilityManager = idleReturnEligibilityManager
+        self.afterInactivityOptionAdapter = afterInactivityOptionAdapter
         self.lastActiveTabStore = lastActiveTabStore
         self.ntpAfterIdleInstrumentation = DefaultNTPAfterIdleInstrumentation(eligibilityManager: idleReturnEligibilityManager)
         self.idleReturnTabCountInstrumentation = DefaultIdleReturnTabCountInstrumentation(eligibilityManager: idleReturnEligibilityManager)
@@ -1531,7 +1534,8 @@ class MainViewController: UIViewController {
                     targetTab: targetTab,
                     tabsSource: tabManager,
                     router: self,
-                    featureFlagger: featureFlagger
+                    featureFlagger: featureFlagger,
+                    afterInactivityOptionAdapter: afterInactivityOptionAdapter
                 )
             }
             return nil
@@ -1545,7 +1549,8 @@ class MainViewController: UIViewController {
                 targetTab: targetTab,
                 tabsSource: tabManager,
                 router: self,
-                featureFlagger: featureFlagger
+                featureFlagger: featureFlagger,
+                afterInactivityOptionAdapter: afterInactivityOptionAdapter
             )
         }
         if let link = targetTab.link {
@@ -1558,7 +1563,8 @@ class MainViewController: UIViewController {
                 targetTab: targetTab,
                 tabsSource: tabManager,
                 router: self,
-                featureFlagger: featureFlagger
+                featureFlagger: featureFlagger,
+                afterInactivityOptionAdapter: afterInactivityOptionAdapter
             )
         }
         return nil

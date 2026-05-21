@@ -25,7 +25,7 @@ import DesignResourcesKitIcons
 struct ReturnToTabCard: View {
     @Environment(\.layoutDirection) private var layoutDirection
 
-    let model: EscapeHatchModel
+    @ObservedObject var model: EscapeHatchModel
 
     /// Frame of the three-dots menu button in the key window's coordinate space.
     /// Used as the popover anchor when burning a tab on iPad — the FireConfirmationPresenter
@@ -135,6 +135,22 @@ struct ReturnToTabCard: View {
                     Image(uiImage: DesignSystemImages.Glyphs.Size24.fire)
                 }
             }
+            Picker(selection: model.afterInactivityOptionBinding) {
+                ForEach(AfterInactivityOption.allCases, id: \.self) { option in
+                    Text(option.description)
+                        .tag(option)
+                }
+            } label: {
+                Text(UserText.settingsAfterInactivityLabel)
+                Text(model.afterInactivityOptionBinding.wrappedValue.description)
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+
+                Image(uiImage: DesignSystemImages.Glyphs.Size24.settings)
+                    .foregroundColor(Color(designSystemColor: .icons))
+
+            }
+            .pickerStyle(.menu)
         }
     }
 
@@ -283,6 +299,19 @@ private enum Metrics {
                                     domain: nil,
                                     targetTab: target,
                                     tabCount: 1))
+        .padding()
+        .frame(width: 360)
+}
+
+#Preview("Return to tab — New Tab selected") {
+    let target = Tab(fireTab: false)
+    ReturnToTabCard(model: .preview(title: "Tokamak - Wikipedia",
+                                    subtitle: "en.wikipedia.org/wiki/Tokamak",
+                                    tabType: .regular,
+                                    domain: "en.wikipedia.org",
+                                    targetTab: target,
+                                    tabCount: 9,
+                                    afterInactivityOption: .newTab))
         .padding()
         .frame(width: 360)
 }
